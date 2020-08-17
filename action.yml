@@ -1,18 +1,18 @@
-name: "Manage Github Secrets"
-description: "Creates, manages, updates repository secrets, environment variables and outputs for use within other actions"
-author: "Videndum"
+name: 'Manage Github Secrets'
+description: 'Creates, manages, updates repository secrets, environment variables and outputs for use within other actions'
+author: 'Videndum'
 inputs:
   settings:
     required: false
-    description: "Settings to be passed"
+    description: 'Settings to be passed'
   settingsjson:
     required: false
-    description: "JSON file to be passed"
+    description: 'JSON file to be passed'
   mode:
     required: true
-    description: "Sets the mode of the action"
-    default: "outputs"
+    description: 'Sets the mode of the action - Output, Secrets, Environment'
+    default: 'outputs'
 
 runs:
-  using: "node12"
-  main: "dist/index.js"
+  using: 'node12'
+  main: 'dist/index.js'

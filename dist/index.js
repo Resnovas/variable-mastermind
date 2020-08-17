@@ -19,7 +19,13 @@ require('./sourcemap-register.js');module.exports =
 /******/ 		};
 /******/
 /******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 		var threw = true;
+/******/ 		try {
+/******/ 			modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 			threw = false;
+/******/ 		} finally {
+/******/ 			if(threw) delete installedModules[moduleId];
+/******/ 		}
 /******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
@@ -85,16 +91,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
-const wait_1 = __webpack_require__(521);
+const classes_1 = __webpack_require__(662);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const ms = core.getInput('milliseconds');
-            core.debug(`Waiting ${ms} milliseconds ...`); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-            core.debug(new Date().toTimeString());
-            yield wait_1.wait(parseInt(ms, 10));
-            core.debug(new Date().toTimeString());
-            core.setOutput('time', new Date().toTimeString());
+            const inputdata = {
+                mode: core.getInput('mode'),
+                file: core.getInput('settingsjson'),
+                settings: core.getInput('settings')
+            };
+            core.debug(`mode is ${inputdata.mode}.`);
+            core.debug(`file is ${inputdata.file}.`);
+            core.debug(`settings are ${inputdata.settings}.`);
+            const settings = yield classes_1.global.parseSettings(inputdata).catch(err => {
+                core.error(err);
+            });
+            switch (inputdata.mode) {
+                case 'secret': {
+                    // secret.output()
+                }
+                case 'output': {
+                    // output.output()
+                }
+                case 'environment': {
+                    // environment.output()
+                }
+                default: {
+                    core.error(`Mode is unknown ('${inputdata.mode}') - Valid options: output, secret, environment`);
+                }
+            }
+            // core.debug(new Date().toTimeString())
         }
         catch (error) {
             core.setFailed(error.message);
@@ -434,8 +460,15 @@ exports.getState = getState;
 
 /***/ }),
 
-/***/ 521:
-/***/ (function(__unusedmodule, exports) {
+/***/ 622:
+/***/ (function(module) {
+
+module.exports = require("path");
+
+/***/ }),
+
+/***/ 662:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
 
 "use strict";
 
@@ -449,26 +482,105 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.wait = void 0;
-function wait(milliseconds) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise(resolve => {
-            if (isNaN(milliseconds)) {
-                throw new Error('milliseconds not a number');
-            }
-            setTimeout(() => resolve('done!'), milliseconds);
+exports.secret = exports.environment = exports.output = exports.global = void 0;
+const util_1 = __webpack_require__(669);
+// import * as github from '@actions/github'
+class Global {
+    /**
+     * Parse the settings from inputs
+     * @param inputdata
+     */
+    parseSettings(inputdata) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise(resolve => {
+                let settings;
+                console.log(inputdata);
+                if (util_1.isString(inputdata.settings)) {
+                    /**
+                     * Checks to see if the settings data is valid and converts to json
+                     */
+                    settings = JSON.parse(inputdata.settings);
+                    console.log(settings);
+                    resolve(settings);
+                }
+                else if (inputdata.file) {
+                    /**
+                     * Checks to see if the settings file is valid
+                     */
+                }
+                else {
+                    throw new Error(`Settings are invalid`);
+                }
+            });
         });
-    });
+    }
 }
-exports.wait = wait;
+class Outputs {
+    /**
+     * Outputs data as action output
+     * @param name Name of the output
+     * @param data Data to output
+     */
+    output(name, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise(resolve => {
+                if (!data.file || !data.mode || !data.settings) {
+                    throw new Error('data not formated correctly');
+                }
+            });
+        });
+    }
+}
+class Environment {
+    /**
+     * Outputs data as Environment variable
+     * @param name Name of the output
+     * @param data Data to output
+     */
+    output(name, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise(resolve => {
+                if (util_1.isNumber(data)) {
+                    throw new Error('data not a string');
+                }
+            });
+        });
+    }
+}
+class Secrets {
+    /**
+     * Outputs data as Secret variable
+     * @param name Name of the output
+     * @param data Data to output
+     */
+    output(name, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise(resolve => {
+                if (util_1.isNumber(data)) {
+                    throw new Error('data not a string');
+                }
+            });
+        });
+    }
+}
+exports.global = new Global();
+exports.output = new Outputs();
+exports.environment = new Environment();
+exports.secret = new Secrets();
+exports.default = {
+    global: exports.global,
+    output: exports.output,
+    environment: exports.environment,
+    secret: exports.secret
+};
 
 
 /***/ }),
 
-/***/ 622:
+/***/ 669:
 /***/ (function(module) {
 
-module.exports = require("path");
+module.exports = require("util");
 
 /***/ })
 
