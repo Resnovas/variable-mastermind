@@ -12,6 +12,10 @@ inputs:
     required: true
     description: 'Sets the mode of the action - Output, Secrets, Environment'
     default: 'outputs'
+  token: 
+    required: true
+    description: 'The token that should be used'
+    default: ''
 
 runs:
   using: 'node12'
