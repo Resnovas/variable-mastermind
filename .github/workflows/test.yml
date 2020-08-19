@@ -23,5 +23,5 @@ jobs:
         with:
           settings: ${{ secrets.SETTINGS }}
           settingsjson: '.github/allconfigs.json'
-          mode: 'outputs'
+          mode: 'output'
           token: ${{ secrets.GITHUB_TOKEN }}

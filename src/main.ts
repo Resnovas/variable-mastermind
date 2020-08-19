@@ -12,7 +12,7 @@ async function run (): Promise<void> {
     core.debug(`file is ${inputdata.file}.`)
     core.debug(`settings are ${inputdata.settings}.`)
     const settings = await global.parseSettings(inputdata).catch(err => {
-      core.error(err)
+      core.setFailed(err)
     })
     classes.global.useSettings(inputdata.mode, settings)
   } catch (error) {
