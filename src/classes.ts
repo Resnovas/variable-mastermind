@@ -17,13 +17,17 @@ class Global {
     return new Promise(async resolve => {
       let settings
       try {
-        if (inputdata.settings && typeof inputdata.settings == 'string') {
+        if (
+          inputdata.settings &&
+          typeof inputdata.settings == 'string' &&
+          inputdata.settings !== ''
+        ) {
           /**
            * Checks to see if the settings data is valid and converts to json
            */
           settings = JSON.parse(inputdata.settings)
           resolve(settings)
-        } else if (typeof inputdata.file == 'string') {
+        } else if (typeof inputdata.file == 'string' && inputdata.file !== '') {
           /**
            * Checks to see if the settings file is valid
            */
@@ -50,6 +54,29 @@ class Global {
     })
     return Buffer.from(response.data.content, response.data.encoding).toString()
   }
+
+  async useSettings (mode: string, settings: any): Promise<boolean> {
+    if (mode == 'secret') {
+      // output.secret()
+    } else if (mode == 'output' || mode == 'environment') {
+      for (const setting in settings) {
+        if (setting == 'default') return false
+        if (settings[setting].enabled === false) return false
+
+        for (const ver in settings[setting].vars) {
+          if (mode == 'output')
+            output.output(`${setting}_${ver}`, settings[setting].vars[ver])
+          if (mode == 'environment')
+            output.environment(`${setting}_${ver}`, settings[setting].vars[ver])
+        }
+      }
+    } else {
+      core.error(
+        `Mode is unknown ('${mode}') - Valid options: output, secret, environment`
+      )
+    }
+    return true
+  }
 }
 
 // {
@@ -63,11 +90,22 @@ class Outputs {
    * @param name Name of the output
    * @param data Data to output
    */
-  async output (name: string, data: any): Promise<string> {
+  async output (name: string, data: string): Promise<boolean> {
     return new Promise(resolve => {
-      if (!data.file || !data.mode || !data.settings) {
-        throw new Error('data not formated correctly')
-      }
+      core.setOutput(name, data)
+      return true
+    })
+  }
+  async environment (name: string, data: string): Promise<boolean> {
+    return new Promise(resolve => {
+      core.exportVariable(name, data)
+      return true
+    })
+  }
+  async secret (name: string, data: string): Promise<boolean> {
+    return new Promise(resolve => {
+      // core.exportVariable(name, data)
+      return true
     })
   }
 }

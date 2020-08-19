@@ -517,7 +517,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
-const classes_1 = __webpack_require__(662);
+const classes_1 = __importStar(__webpack_require__(662));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -533,25 +533,10 @@ function run() {
             const settings = yield classes_1.global.parseSettings(inputdata).catch(err => {
                 core.error(err);
             });
-            console.log(settings);
-            switch (inputdata.mode) {
-                case 'secret': {
-                    // secret.output()
-                }
-                case 'output': {
-                    // output.output()
-                }
-                case 'environment': {
-                    // environment.output()
-                }
-                default: {
-                    core.error(`Mode is unknown ('${inputdata.mode}') - Valid options: output, secret, environment`);
-                }
-            }
-            // core.debug(new Date().toTimeString())
+            classes_1.default.global.useSettings(inputdata.mode, settings);
         }
         catch (error) {
-            core.setFailed(error.message);
+            core.setFailed(error);
         }
     });
 }
@@ -4336,6 +4321,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.output = exports.global = void 0;
 const github = __importStar(__webpack_require__(469));
+const core = __importStar(__webpack_require__(470));
 class Global {
     /**
      * Parse the settings from inputs
@@ -4387,6 +4373,31 @@ class Global {
             return Buffer.from(response.data.content, response.data.encoding).toString();
         });
     }
+    useSettings(mode, settings) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (mode == 'secret') {
+                // output.secret()
+            }
+            else if (mode == 'output' || mode == 'environment') {
+                for (const setting in settings) {
+                    if (setting == 'default')
+                        return false;
+                    if (settings[setting].enabled === false)
+                        return false;
+                    for (const ver in settings[setting].vars) {
+                        if (mode == 'output')
+                            exports.output.output(`${setting}_${ver}`, settings[setting].vars[ver]);
+                        if (mode == 'environment')
+                            exports.output.environment(`${setting}_${ver}`, settings[setting].vars[ver]);
+                    }
+                }
+            }
+            else {
+                core.error(`Mode is unknown ('${mode}') - Valid options: output, secret, environment`);
+            }
+            return true;
+        });
+    }
 }
 // {
 //   owner: 'Videndum',
@@ -4402,9 +4413,24 @@ class Outputs {
     output(name, data) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise(resolve => {
-                if (!data.file || !data.mode || !data.settings) {
-                    throw new Error('data not formated correctly');
-                }
+                core.setOutput(name, data);
+                return true;
+            });
+        });
+    }
+    environment(name, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise(resolve => {
+                core.exportVariable(name, data);
+                return true;
+            });
+        });
+    }
+    secret(name, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise(resolve => {
+                // core.exportVariable(name, data)
+                return true;
             });
         });
     }

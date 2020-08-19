@@ -21,4 +21,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./
         with:
-          milliseconds: 1000
+          settings: ${{ secrets.SETTINGS }}
+          settingsjson: '.github/allconfigs.json'
+          mode: 'outputs'
+          token: ${{ secrets.GITHUB_TOKEN }}

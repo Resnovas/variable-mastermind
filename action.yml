@@ -8,6 +8,7 @@ inputs:
   settingsjson:
     required: false
     description: 'JSON file to be passed'
+    default: '.github/allconfigs.json'
   mode:
     required: true
     description: 'Sets the mode of the action - Output, Secrets, Environment'
