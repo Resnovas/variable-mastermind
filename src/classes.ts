@@ -64,6 +64,10 @@ class Global {
         if (settings[setting].enabled === false) return false
 
         for (const ver in settings[setting].vars) {
+          core.info(
+            `Creating ${mode} setting: ${setting}_${ver} - ` +
+              settings[setting].vars[ver]
+          )
           if (mode == 'output')
             output.output(`${setting}_${ver}`, settings[setting].vars[ver])
           if (mode == 'environment')

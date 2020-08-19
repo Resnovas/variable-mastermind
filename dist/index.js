@@ -531,7 +531,7 @@ function run() {
             core.debug(`file is ${inputdata.file}.`);
             core.debug(`settings are ${inputdata.settings}.`);
             const settings = yield classes_1.global.parseSettings(inputdata).catch(err => {
-                core.error(err);
+                core.setFailed(err);
             });
             classes_1.default.global.useSettings(inputdata.mode, settings);
         }
@@ -4338,14 +4338,16 @@ class Global {
             return new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
                 let settings;
                 try {
-                    if (inputdata.settings && typeof inputdata.settings == 'string') {
+                    if (inputdata.settings &&
+                        typeof inputdata.settings == 'string' &&
+                        inputdata.settings !== '') {
                         /**
                          * Checks to see if the settings data is valid and converts to json
                          */
                         settings = JSON.parse(inputdata.settings);
                         resolve(settings);
                     }
-                    else if (typeof inputdata.file == 'string') {
+                    else if (typeof inputdata.file == 'string' && inputdata.file !== '') {
                         /**
                          * Checks to see if the settings file is valid
                          */
@@ -4385,6 +4387,8 @@ class Global {
                     if (settings[setting].enabled === false)
                         return false;
                     for (const ver in settings[setting].vars) {
+                        core.info(`Creating ${mode} setting: ${setting}_${ver} - ` +
+                            settings[setting].vars[ver]);
                         if (mode == 'output')
                             exports.output.output(`${setting}_${ver}`, settings[setting].vars[ver]);
                         if (mode == 'environment')
