@@ -122,8 +122,7 @@ module.exports = /******/ (() => {
             let settings
             if (
               this.inputdata.settings &&
-              typeof this.inputdata.settings == 'string' &&
-              this.inputdata.settings !== ''
+              typeof this.inputdata.settings == 'string'
             ) {
               /**
                * Checks to see if the settings data is valid and converts to json

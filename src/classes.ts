@@ -33,11 +33,7 @@ export class Global {
     if (!this.inputdata.token) throw new Error('No token provided')
     this.client = github.getOctokit(this.inputdata.token)
     let settings
-    if (
-      this.inputdata.settings &&
-      typeof this.inputdata.settings == 'string' &&
-      this.inputdata.settings !== ''
-    ) {
+    if (this.inputdata.settings && typeof this.inputdata.settings == 'string') {
       /**
        * Checks to see if the settings data is valid and converts to json
        */
