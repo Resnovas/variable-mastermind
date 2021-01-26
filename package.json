@@ -31,7 +31,7 @@
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
-    "@octokit/core": "^3.2.1",
+    "@octokit/core": "^3.2.5",
     "octonode": "^0.9.5",
     "tweetsodium": "^0.0.5"
   },
