@@ -1,6 +1,6 @@
 {
   "name": "@videndum/github-secrets",
-  "version": "0.0.0",
+  "version": "0.4.0-alpha.3",
   "description": "",
   "repository": {
     "type": "",
@@ -8,7 +8,6 @@
   },
   "author": "",
   "license": "",
-  "private": true,
   "main": "lib/main.js",
   "directories": {
     "lib": "./lib",
@@ -26,27 +25,28 @@
     "format": "prettier --config .prettier.json --write .",
     "format-check": "prettier --config .prettier.json --check .",
     "package": "ncc build --source-map",
-    "test": "jest"
+    "test": "jest",
+    "git": "git add . && git commit -m \"chore: Bump Version & Changelog from @videndum/action-masterminds\""
   },
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "@actions/github": "^4.0.0",
+    "@actions/github": "^5.0.0",
     "@octokit/core": "^3.2.1",
-    "octonode": "^0.9.5",
+    "octonode": "^0.10.2",
     "tweetsodium": "^0.0.5"
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",
-    "@types/node": "^14.14.7",
+    "@types/node": "^16.4.2",
     "@vercel/ncc": "^0.26.1",
     "eslint-plugin-github": "^4.1.1",
     "jest": "^26.6.3",
-    "jest-circus": "^26.6.3",
-    "js-yaml": "^3.14.0",
+    "jest-circus": "^27.0.6",
+    "js-yaml": "^4.1.0",
     "prettier": "^2.1.2",
-    "prettier-plugin-organize-imports": "^1.1.1",
-    "prettier-plugin-pkg": "^0.8.0",
-    "prettier-plugin-sh": "^0.6.0",
+    "prettier-plugin-organize-imports": "^2.3.3",
+    "prettier-plugin-pkg": "^0.10.0",
+    "prettier-plugin-sh": "^0.7.1",
     "prettier-standard": "^16.4.1",
     "ts-jest": "^26.4.4",
     "typescript": "^4.0.5"
