@@ -1,6 +1,6 @@
 # Manage Github Secrets
 
-This action is build to support the production of github workflow templates, and provide functionality to pass data from secrets or files to workflow steps. This therefore allows users to create complex workflows with complex enviormental variables.
+This action is built to support the production of github workflow templates, and provide functionality to pass data from secrets or files to workflow steps. This allows users to create complex workflows with complex environmental variables.
 
 We use secrets in this to reduce the load on the API as another method we tried would cause the api to max out regularly.
 
@@ -18,7 +18,7 @@ To get started with this action, create a file named `allconfig.json` or `allcon
 
 _[allconfig.json](.github/allconfigs.json)_
 
-```json
+```jsonc
 {
   "auto": {
     // prefixed to the variables in this collection
@@ -40,7 +40,7 @@ auto: # prefixed to the variables in this collection
     branch: 'auto-update'
 ```
 
-Using the action within a workflow can require a small bit of configuration, depending on the application. The following exaples are created from our application [Universal GitActions Workflows](https://github.com/Videndum/Universal-GitAction-Workflows) which is heavily based on this action.
+Using the action within a workflow can require a small bit of configuration, depending on the application. The following examples are created from our application [Universal GitActions Workflows](https://github.com/Videndum/Universal-GitAction-Workflows) which is heavily based on this action.
 
 ## Using Job Outputs
 
